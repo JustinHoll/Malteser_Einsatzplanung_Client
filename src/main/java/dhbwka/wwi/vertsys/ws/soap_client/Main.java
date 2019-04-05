@@ -9,6 +9,11 @@
  */
 package dhbwka.wwi.vertsys.ws.soap_client;
 
+import dhbwka.wwi.vertsys.javaee.malteser.soap.ws.AccessRestrictedException_Exception;
+import dhbwka.wwi.vertsys.javaee.malteser.soap.ws.Category;
+import dhbwka.wwi.vertsys.javaee.malteser.soap.ws.FindAllCategories;
+import dhbwka.wwi.vertsys.javaee.malteser.soap.ws.FindAllTasks;
+import dhbwka.wwi.vertsys.javaee.malteser.soap.ws.InvalidCredentialsException_Exception;
 import dhbwka.wwi.vertsys.javaee.malteser.soap.ws.MalteserSOAPService;
 import dhbwka.wwi.vertsys.javaee.malteser.soap.ws.MalteserSOAPService_Service;
 import dhbwka.wwi.vertsys.javaee.malteser.soap.ws.Task;
@@ -20,15 +25,23 @@ import java.util.List;
  */
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InvalidCredentialsException_Exception, AccessRestrictedException_Exception{
         //Stub-Objekt zum entfernten Aufruf erstellen
         MalteserSOAPService_Service service = new MalteserSOAPService_Service();
         MalteserSOAPService einsatzWs = service.getMalteserSOAPServicePort();
-        List<Task> einsatzliste = einsatzWs.findAllTasks();
+        
+        FindAllTasks findTasks = new FindAllTasks();
+        List<Task> einsatzliste = einsatzWs.findAllTasks(findTasks, "Test1234", "Test123").getEinsatz();
         for(Task einsatz : einsatzliste){
             System.out.println(einsatz.getStatus());
         }
         
+        
+        FindAllCategories findCategories = new FindAllCategories();
+        List<Category> categoriesListe = einsatzWs.findAllCategories(findCategories, "Test1234", "Test123").getKategorie();
+        for(Category category : categoriesListe){
+            System.out.println(category.getName());
+        }
         
         // Webservice-Operation "findAll" aufrufen
         //List<Movie> allMovies = movieWs.findAll();
