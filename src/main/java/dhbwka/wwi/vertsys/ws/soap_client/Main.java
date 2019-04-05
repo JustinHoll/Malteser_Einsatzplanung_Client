@@ -17,6 +17,8 @@ import dhbwka.wwi.vertsys.javaee.malteser.soap.ws.InvalidCredentialsException_Ex
 import dhbwka.wwi.vertsys.javaee.malteser.soap.ws.MalteserSOAPService;
 import dhbwka.wwi.vertsys.javaee.malteser.soap.ws.MalteserSOAPService_Service;
 import dhbwka.wwi.vertsys.javaee.malteser.soap.ws.Task;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.List;
 
 /*
@@ -24,39 +26,42 @@ import java.util.List;
  * im Hintergrund das Projekt "SOAP_Server_Beispiel" ausgeführt werden.
  */
 public class Main {
+    
+    static BufferedReader fromKeyboard = new BufferedReader(new InputStreamReader(System.in));
 
-    public static void main(String[] args) throws InvalidCredentialsException_Exception, AccessRestrictedException_Exception{
+    public static void main(String[] args) throws Exception{
+        System.out.println("============");
+        System.out.println("Einsatzplanung API");
+        System.out.println("============");
+        System.out.println("============");
+        System.out.println("Bitte loggen Sie sich ein:");
+        System.out.print("Username: ");
+        String username = fromKeyboard.readLine();
+        System.out.print("Passwort: ");
+        String passwort = fromKeyboard.readLine();
+
         //Stub-Objekt zum entfernten Aufruf erstellen
         MalteserSOAPService_Service service = new MalteserSOAPService_Service();
         MalteserSOAPService einsatzWs = service.getMalteserSOAPServicePort();
         
+        System.out.println("============");
+        System.out.println("Alle Einsätze");
+        System.out.println("============");
         FindAllTasks findTasks = new FindAllTasks();
-        List<Task> einsatzliste = einsatzWs.findAllTasks(findTasks, "Test1234", "Test123").getEinsatz();
+        List<Task> einsatzliste = einsatzWs.findAllTasks(findTasks, username, passwort).getEinsatz();
         for(Task einsatz : einsatzliste){
-            System.out.println(einsatz.getStatus());
+            System.out.println(einsatz.getShortText());
         }
         
-        
+        System.out.println("============");
+        System.out.println("Alle Kategorien");
+        System.out.println("============");
         FindAllCategories findCategories = new FindAllCategories();
-        List<Category> categoriesListe = einsatzWs.findAllCategories(findCategories, "Test1234", "Test123").getKategorie();
+        List<Category> categoriesListe = einsatzWs.findAllCategories(findCategories, username, passwort).getKategorie();
         for(Category category : categoriesListe){
             System.out.println(category.getName());
         }
+       
         
-        // Webservice-Operation "findAll" aufrufen
-        //List<Movie> allMovies = movieWs.findAll();
-
-        // Abgerufenes Ergebnis anzeigen
-        System.out.println("========================");
-        System.out.println("Alle Einsätze");
-        System.out.println("========================");
-        System.out.println();
-        
-//        for (Movie movie : allMovies) {
-//            System.out.println("Name:         " + movie.getName());
-//            System.out.println("Beschreibung: " + movie.getDescription());
-//            System.out.println("Jahr:         " + movie.getReleaseYear());
-//            System.out.println();
-//        }
     }
 }
